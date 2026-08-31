@@ -1,3 +1,4 @@
+ HEAD
 # CXR Sentinel
 
 Evidence-aware, longitudinal chest X-ray decision-support pipeline. Instead of "pneumonia: 82%", the goal
@@ -126,3 +127,6 @@ compliance at your company before this goes past a demo, not after.
 - **Phase 4 — pick 1-2, not all of:** proper uncertainty (MC dropout / deep ensembles / conformal
   prediction) with selective abstention, multi-model consensus, an evidence graph, an error-analysis
   dashboard. Build whichever best supports the story once Phases 1-3 exist and are demoable.
+
+# CXR-sentinel
+bc4905897553913edc3a4800dce2cc70ab62d9b3
