@@ -1,9 +1,14 @@
- HEAD
 # CXR Sentinel
 
 Evidence-aware, longitudinal chest X-ray decision-support pipeline. Instead of "pneumonia: 82%", the goal
 is: what's present, what changed since the prior study, where exactly, how confident the model actually is
 (calibrated, not raw softmax), and when it should defer to a human instead of guessing.
+
+This repo is also the seed of a larger project, **MediTrace AI** — a multi-document clinical evidence
+platform (labs, prescriptions, radiology reports, a patient timeline, cross-document contradiction
+detection, evidence-grounded Q&A) with chest X-ray imaging as one module rather than the whole product. See
+[`MEDITRACE_ROADMAP.md`](MEDITRACE_ROADMAP.md) for that phased plan; everything below documents CXR
+Sentinel as it stands today.
 
 **Implemented and tested, Phase 1-4:** supervised classifier (Phase 1), longitudinal/history comparison
 (Phase 2), an unsupervised OOD autoencoder, template + LLM-upgradeable report drafting with real claim
@@ -127,6 +132,3 @@ compliance at your company before this goes past a demo, not after.
 - **Phase 4 — pick 1-2, not all of:** proper uncertainty (MC dropout / deep ensembles / conformal
   prediction) with selective abstention, multi-model consensus, an evidence graph, an error-analysis
   dashboard. Build whichever best supports the story once Phases 1-3 exist and are demoable.
-
-# CXR-sentinel
-bc4905897553913edc3a4800dce2cc70ab62d9b3
