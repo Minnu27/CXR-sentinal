@@ -1,0 +1,52 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Self-test (synthetic pipeline check)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.selftest",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Download NIH ChestX-ray14 (1 batch, ~9k images)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.download_nih_chestxray14",
+      "args": ["--num_batches", "1"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Train (Phase 1)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.train",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Evaluate checkpoint",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "src.evaluate",
+      "args": [
+        "--checkpoint", "checkpoints/best_model.pt",
+        "--csv", "data/val.csv",
+        "--image_root", "data",
+        "--out_dir", "reports"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Current file",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}

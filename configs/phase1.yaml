@@ -1,0 +1,25 @@
+# CXR Sentinel — Phase 1 config
+# 3 findings only, on purpose. See README for why.
+
+targets:
+  - cardiomegaly
+  - pleural_effusion
+  - lung_opacity
+
+data:
+  image_size: 320
+  # Fill these in once you've converted your source dataset (NIH / CheXpert
+  # Plus / MIMIC-CXR) into the common CSV schema described in src/data.py
+  train_csv: data/train.csv
+  val_csv: data/val.csv
+  image_root: data/images
+
+model:
+  backbone: densenet121
+  pretrained: true
+
+train:
+  epochs: 15
+  batch_size: 32
+  lr: 0.0001
+  num_workers: 2

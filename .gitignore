@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Data — never commit medical images or the raw downloads
+data/
+!data/.gitkeep
+
+# Model artifacts
+checkpoints/
+reports/
+*.pt
+*.pth
+
+# Editor / OS
+.DS_Store
+.vscode/*.log
+
+# Jupyter
+.ipynb_checkpoints/

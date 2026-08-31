@@ -1,0 +1,17 @@
+torch>=2.2
+torchvision>=0.17
+pandas
+scikit-learn
+pillow
+matplotlib
+pyyaml
+fastapi
+uvicorn
+requests
+gradio
+
+# dev tools (VS Code formatting)
+black
+
+# optional — only needed if you use report_draft.py's draft_report_llm() path
+# anthropic
