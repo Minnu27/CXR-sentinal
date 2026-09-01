@@ -8,6 +8,8 @@ venv/
 # Data — never commit medical images or the raw downloads
 data/
 !data/.gitkeep
+meditrace.db
+.env
 
 # Model artifacts
 checkpoints/
