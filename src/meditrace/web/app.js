@@ -3,6 +3,8 @@ const count = document.querySelector('#document-count');
 const form = document.querySelector('#upload-form');
 const statusLine = document.querySelector('#form-status');
 const fileInput = document.querySelector('#file');
+const timelineForm = document.querySelector('#timeline-form');
+const timelineList = document.querySelector('#timeline-list');
 
 const escapeHtml = (value) => value.replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const fileType = name => (name.split('.').pop() || 'DOC').toUpperCase().slice(0, 4);
@@ -17,7 +19,7 @@ async function loadDocuments() {
       <div class="document">
         <div class="doc-icon">${fileType(escapeHtml(doc.filename))}</div>
         <div><h3>${escapeHtml(doc.filename)}</h3><p>${escapeHtml(doc.patient_id)} · ${(doc.size_bytes / 1024).toFixed(1)} KB · ${new Date(doc.created_at).toLocaleString()}</p></div>
-        <span class="badge">${escapeHtml(doc.status)}</span>
+        <div class="doc-actions"><span class="badge">${escapeHtml(doc.document_type || 'unknown')}</span><button type="button" class="extract" data-id="${doc.id}">EXTRACT</button></div>
       </div>`).join('') : '<p class="empty">No documents yet. Ingest the first synthetic source to begin.</p>';
   } catch (error) {
     list.innerHTML = `<p class="empty">${escapeHtml(error.message)}</p>`;
@@ -28,6 +30,13 @@ fileInput.addEventListener('change', () => {
   document.querySelector('#file-name').textContent = fileInput.files[0]?.name || 'No source selected';
 });
 document.querySelector('#refresh').addEventListener('click', loadDocuments);
+list.addEventListener('click', async event => {
+  if (!event.target.matches('.extract')) return;
+  const response = await fetch(`/api/documents/${event.target.dataset.id}/extract`, {method: 'POST'});
+  const data = await response.json();
+  event.target.textContent = response.ok ? 'QUEUED' : (data.detail || 'FAILED');
+  event.target.disabled = response.ok;
+});
 form.addEventListener('submit', async event => {
   event.preventDefault();
   const button = form.querySelector('button');
@@ -44,3 +53,12 @@ form.addEventListener('submit', async event => {
   finally { button.disabled = false; }
 });
 loadDocuments();
+
+timelineForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  const patient = new FormData(timelineForm).get('patient_id');
+  const response = await fetch(`/api/patients/${encodeURIComponent(patient)}/timeline`);
+  const data = await response.json();
+  if (!response.ok) { timelineList.innerHTML = `<p class="empty">${escapeHtml(data.detail || 'Timeline unavailable')}</p>`; return; }
+  timelineList.innerHTML = data.total ? Object.entries(data.groups).map(([period, entries]) => `<section class="time-group"><h3>${escapeHtml(period)}</h3><div>${entries.map(item => `<article><div><b>${escapeHtml(item.test_or_finding)}</b><span>${escapeHtml(item.fact_type)}</span></div><strong>${escapeHtml(item.value || 'Documented')} ${escapeHtml(item.unit || '')}</strong>${item.numeric_delta !== null ? `<small>Δ ${item.numeric_delta > 0 ? '+' : ''}${item.numeric_delta}</small>` : ''}<a href="/api/documents/${item.source_document_id}/content" target="_blank">${escapeHtml(item.source_filename)} · evidence p.${item.evidence_location.page}</a></article>`).join('')}</div></section>`).join('') : '<p class="empty">No evidence facts found for this patient.</p>';
+});

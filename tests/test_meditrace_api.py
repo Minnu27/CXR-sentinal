@@ -51,7 +51,12 @@ def test_upload_list_download_and_evidence_fact(tmp_path):
                 "reference_range": "4.0-5.6",
                 "status": "high",
                 "observed_date": "2026-08-30",
-                "evidence_location": {"page": 1, "line_start": 1, "line_end": 1, "quote": "HbA1c 7.2 %"},
+                "evidence_location": {
+                    "page": 1,
+                    "line_start": 1,
+                    "line_end": 1,
+                    "quote": "HbA1c 7.2 %",
+                },
                 "confidence": 0.98,
             },
         )
@@ -62,6 +67,47 @@ def test_upload_list_download_and_evidence_fact(tmp_path):
 def test_rejects_unsupported_media_type(tmp_path):
     with build_client(tmp_path) as client:
         rejected = client.post(
-            "/api/documents", data={"patient_id": "SYN-1"}, files={"file": ("bad.exe", b"x", "application/x-msdownload")}
+            "/api/documents",
+            data={"patient_id": "SYN-1"},
+            files={"file": ("bad.exe", b"x", "application/x-msdownload")},
         )
         assert rejected.status_code == 415
+
+
+def test_extraction_queue_and_deterministic_timeline(tmp_path):
+    with build_client(tmp_path) as client:
+        document = client.post(
+            "/api/documents",
+            data={"patient_id": "SYN-TIME"},
+            files={
+                "file": (
+                    "lab.txt",
+                    b"Laboratory report\nHbA1c 7.2 % high",
+                    "text/plain",
+                )
+            },
+        ).json()
+        queued = client.post(f"/api/documents/{document['id']}/extract")
+        assert queued.status_code == 202
+        assert queued.json()["status"] == "queued"
+        assert client.get(f"/api/jobs/{queued.json()['id']}").status_code == 200
+
+        for observed_date, value in (("2026-07-01", "7.0"), ("2026-08-01", "7.5")):
+            result = client.post(
+                f"/api/documents/{document['id']}/facts",
+                json={
+                    "patient_id": "SYN-TIME",
+                    "fact_type": "lab",
+                    "test_or_finding": "HbA1c",
+                    "value": value,
+                    "unit": "%",
+                    "observed_date": observed_date,
+                    "evidence_location": {"page": 1, "line_start": 2, "quote": "HbA1c"},
+                    "confidence": 0.9,
+                },
+            )
+            assert result.status_code == 201
+        timeline = client.get("/api/patients/SYN-TIME/timeline").json()
+        assert timeline["total"] == 2
+        assert timeline["groups"]["2026-08"][0]["numeric_delta"] == 0.5
+        assert timeline["groups"]["2026-08"][0]["source_document_id"] == document["id"]
