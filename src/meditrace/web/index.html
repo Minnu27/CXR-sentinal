@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MediTrace AI — Evidence workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="safety-banner"><span>RESEARCH USE ONLY</span> Decision-support prototype on synthetic/de-identified research data — not a diagnostic device.</div>
+  <header>
+    <a class="brand" href="/"><span class="brand-mark">M</span><span>MEDI<span>TRACE</span></span></a>
+    <nav><a class="active" href="#workspace">Workspace</a><a href="#documents">Documents</a><a href="#evidence">Evidence</a></nav>
+    <div class="system"><i></i> SYSTEM READY</div>
+  </header>
+  <main>
+    <section class="hero" id="workspace">
+      <div>
+        <p class="eyebrow">CLINICAL EVIDENCE WORKSPACE / 01</p>
+        <h1>Every fact,<br><em>traced to source.</em></h1>
+        <p class="lede">Build a reviewable longitudinal record from synthetic and de-identified research documents. Evidence stays attached at every step.</p>
+      </div>
+      <div class="metric-grid">
+        <article><span>DOCUMENTS</span><strong id="document-count">000</strong><small>INGESTED</small></article>
+        <article><span>PIPELINE</span><strong>01</strong><small>FOUNDATION</small></article>
+        <article><span>MODEL CALLS</span><strong>000</strong><small>DISABLED</small></article>
+        <article><span>DATA CLASS</span><strong>R&amp;D</strong><small>NON-CLINICAL</small></article>
+      </div>
+    </section>
+
+    <section class="workspace-grid">
+      <article class="blueprint-card upload-card">
+        <div class="card-heading"><div><p class="eyebrow">INGEST / DOCUMENT</p><h2>Add source material</h2></div><span class="step">01</span></div>
+        <form id="upload-form">
+          <label>Patient reference<input name="patient_id" placeholder="e.g. SYN-1048" required maxlength="128"></label>
+          <label class="dropzone" for="file"><span class="upload-icon">↑</span><strong>DROP A SOURCE DOCUMENT</strong><small>PDF, PNG, JPG, TXT OR CSV · MAX 20 MB</small><input id="file" name="file" type="file" required accept=".pdf,.png,.jpg,.jpeg,.txt,.csv"></label>
+          <div class="file-name" id="file-name">No source selected</div>
+          <button type="submit">INGEST DOCUMENT <span>→</span></button>
+          <p class="form-status" id="form-status" role="status"></p>
+        </form>
+      </article>
+
+      <article class="blueprint-card" id="documents">
+        <div class="card-heading"><div><p class="eyebrow">SOURCE REGISTER</p><h2>Recent documents</h2></div><button class="icon-button" id="refresh" aria-label="Refresh documents">↻</button></div>
+        <div class="document-list" id="document-list"><p class="empty">No documents yet. Ingest the first synthetic source to begin.</p></div>
+      </article>
+    </section>
+
+    <section class="principles" id="evidence">
+      <p class="eyebrow">SYSTEM CONTRACT / EVIDENCE FIRST</p>
+      <div><article><b>01</b><h3>Immutable source</h3><p>Original files are retained with a SHA-256 fingerprint and stable source identifier.</p></article><article><b>02</b><h3>Location-aware facts</h3><p>Facts require a page and may include line ranges, exact quotes, and bounding boxes.</p></article><article><b>03</b><h3>Explicit uncertainty</h3><p>Every extracted fact carries confidence. Unsupported claims do not become answers.</p></article></div>
+    </section>
+  </main>
+  <footer><span>MEDITrace AI / BUILD 0.1</span><span>NO REAL PATIENT DATA</span></footer>
+  <script src="/app.js"></script>
+</body>
+</html>
