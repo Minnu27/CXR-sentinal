@@ -1,2 +1,16 @@
+[project]
+name = "meditrace-ai"
+version = "0.1.0"
+description = "Evidence-first document ingestion workspace for synthetic and de-identified research data"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115",
+  "psycopg[binary]>=3.1",
+  "python-multipart>=0.0.9",
+  "sqlalchemy>=2.0",
+  "uvicorn>=0.30",
+]
+
 [tool.vercel]
 entrypoint = "src.meditrace.api:app"
