@@ -4,5 +4,14 @@ fastapi>=0.115
 uvicorn>=0.30
 sqlalchemy>=2.0
 psycopg[binary]>=3.1
-python-multipart>=0.0.9
+python-multipart
 pypdf>=5.0
+requests
+gradio
+
+# dev tools (VS Code formatting)
+black
+pytest
+
+# optional — only needed if you use report_draft.py's draft_report_llm() path
+# anthropic

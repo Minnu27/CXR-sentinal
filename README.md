@@ -32,12 +32,6 @@ uvicorn src.meditrace.api:app --reload
 python -m src.meditrace.worker
 ```
 
-The legacy CXR research modules require the larger optional environment:
-
-```bash
-pip install -r requirements-ml.txt
-```
-
 Open <http://127.0.0.1:8000>. SQLite metadata is written to `meditrace.db`; source documents are stored beneath `data/documents/`. Both are ignored by Git.
 
 ### Postgres mode
