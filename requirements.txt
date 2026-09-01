@@ -7,11 +7,15 @@ matplotlib
 pyyaml
 fastapi
 uvicorn
+sqlalchemy>=2.0
+psycopg[binary]>=3.1
+python-multipart
 requests
 gradio
 
 # dev tools (VS Code formatting)
 black
+pytest
 
 # optional — only needed if you use report_draft.py's draft_report_llm() path
 # anthropic
