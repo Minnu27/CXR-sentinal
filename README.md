@@ -40,15 +40,6 @@ uvicorn src.meditrace.api:app --reload
 
 The compose service is intended for local development only. Change its credentials before using it outside an isolated development machine.
 
-### Vercel
-
-`pyproject.toml` identifies `src.meditrace.api:app` as the serverless entrypoint. On Vercel, configure
-`DATABASE_URL` (or `POSTGRES_URL`) with a durable Postgres connection and `OBJECT_STORE_PATH` only when a
-durable object-store adapter is available. Without those variables the app uses `/tmp` so the function can
-start, but both its SQLite database and uploaded files are **ephemeral** and may disappear between requests
-or deployments. That fallback is suitable only for previewing the interface; it is not a persistence
-strategy.
-
 ## API contract
 
 Interactive API documentation is available at `/docs`.
