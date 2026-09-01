@@ -1,6 +1,6 @@
 # MediTrace AI
 
-MediTrace is an evidence-first workspace for turning synthetic and de-identified research documents into a reviewable longitudinal record. The repository is being rebuilt in the phases described in [`PROJECT_PLAN.md`](PROJECT_PLAN.md); the current release implements the **Phase 0 foundation** without pretending that extraction, diagnosis, or clinical reasoning already exists.
+MediTrace is an evidence-first workspace for turning synthetic and de-identified research documents into a reviewable longitudinal record. The repository is being rebuilt in the phases described in [`PROJECT_PLAN.md`](PROJECT_PLAN.md); this release provides the **Phase 0 foundation and Phase 1–3 workflow**: queued extraction, typed text facts, optional model submission, and evidence-linked timelines.
 
 > **Decision-support prototype on synthetic/de-identified research data — not a diagnostic device.** Do not upload identifiable patient information or use this software for clinical care.
 
@@ -12,7 +12,10 @@ MediTrace is an evidence-first workspace for turning synthetic and de-identified
 - SHA-256 fingerprints for immutable source identification and rollback-safe file persistence.
 - SQLAlchemy storage that defaults to SQLite for a zero-setup demo and supports the Phase 0 Postgres service through `DATABASE_URL`.
 - A responsive “Industry” interface with the research-only disclaimer visible at all times.
-- No model calls. Uploaded documents remain in `uploaded` state until a later extraction worker is deliberately introduced.
+- Extraction requests create durable jobs; parsing runs only in a separate worker process.
+- Deterministic lab, medication, radiology, and discharge extraction supports text sources with explicit `unknown` classification.
+- A configured OpenAI-compatible MedGemma gateway can receive source text through an explicit endpoint; returned facts are validated before persistence.
+- Patient timelines group facts by month or visit and calculate prior numeric deltas without a model.
 
 The pre-existing CXR classifier research modules remain under `src/` for reference, but they are not connected to the MediTrace document workflow and are not represented as clinical functionality.
 
@@ -25,6 +28,8 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn src.meditrace.api:app --reload
+# In another terminal, process queued extraction jobs:
+python -m src.meditrace.worker
 ```
 
 Open <http://127.0.0.1:8000>. SQLite metadata is written to `meditrace.db`; source documents are stored beneath `data/documents/`. Both are ignored by Git.
@@ -52,6 +57,14 @@ Interactive API documentation is available at `/docs`.
 | `GET` | `/api/documents/{id}` | Retrieve document metadata and linked facts |
 | `GET` | `/api/documents/{id}/content` | Retrieve original source bytes |
 | `POST` | `/api/documents/{id}/facts` | Add a schema-validated, evidence-linked fact |
+| `POST` | `/api/documents/{id}/extract` | Queue background extraction |
+| `GET` | `/api/jobs/{id}` | Read extraction status/errors |
+| `POST` | `/api/documents/{id}/submit-to-model` | Explicitly submit text to the configured model |
+| `GET` | `/api/patients/{patient_id}/timeline` | Evidence-linked timeline and deterministic deltas |
+
+## Connect your database and model
+
+Set `DATABASE_URL` to a SQLAlchemy Postgres URL. The `postgresql://` form is normalized to the installed psycopg driver. Use a dedicated, access-controlled database and environment secrets, never committed credentials. Set `MODEL_ENDPOINT`, `MODEL_API_KEY`, and `MODEL_NAME` for an OpenAI-compatible gateway. No source is sent automatically: submission is an explicit per-document operation.
 
 Example evidence fact:
 
@@ -90,5 +103,5 @@ The first command covers the MediTrace upload-to-evidence loop on synthetic text
 
 - **Data:** public, synthetic, or properly de-identified research datasets only. Dataset access terms still apply.
 - **Clinical use:** prohibited. This prototype does not diagnose, recommend treatment, or replace professional review.
-- **Current phase:** foundation and ingestion only. Docling extraction, LOINC normalization, timelines, contradiction detection, grounded Q&A, and imaging integration are future phases and must earn their own tests before being described as working.
+- **Current phase:** Phase 0 plus the Phase 1–3 text workflow. Scanned-image OCR requires a Docling-enabled worker deployment; the base worker fails explicitly rather than fabricating text. Contradiction detection, grounded Q&A, and imaging integration remain future work.
 - **Security:** the local build has no production authentication, encryption/key management, malware scanning, audit log, or deployment hardening. Do not expose it publicly.

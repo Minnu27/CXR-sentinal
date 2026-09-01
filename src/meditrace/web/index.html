@@ -13,7 +13,7 @@
   <div class="safety-banner"><span>RESEARCH USE ONLY</span> Decision-support prototype on synthetic/de-identified research data — not a diagnostic device.</div>
   <header>
     <a class="brand" href="/"><span class="brand-mark">M</span><span>MEDI<span>TRACE</span></span></a>
-    <nav><a class="active" href="#workspace">Workspace</a><a href="#documents">Documents</a><a href="#evidence">Evidence</a></nav>
+    <nav><a class="active" href="#workspace">Workspace</a><a href="#documents">Documents</a><a href="#timeline">Timeline</a></nav>
     <div class="system"><i></i> SYSTEM READY</div>
   </header>
   <main>
@@ -25,8 +25,8 @@
       </div>
       <div class="metric-grid">
         <article><span>DOCUMENTS</span><strong id="document-count">000</strong><small>INGESTED</small></article>
-        <article><span>PIPELINE</span><strong>01</strong><small>FOUNDATION</small></article>
-        <article><span>MODEL CALLS</span><strong>000</strong><small>DISABLED</small></article>
+        <article><span>PIPELINE</span><strong>03</strong><small>TIMELINE</small></article>
+        <article><span>MODEL</span><strong>API</strong><small>OPT-IN</small></article>
         <article><span>DATA CLASS</span><strong>R&amp;D</strong><small>NON-CLINICAL</small></article>
       </div>
     </section>
@@ -49,12 +49,18 @@
       </article>
     </section>
 
+    <section class="blueprint-card timeline-card" id="timeline">
+      <div class="card-heading"><div><p class="eyebrow">LONGITUDINAL RECORD / PHASE 03</p><h2>Patient timeline</h2></div></div>
+      <form id="timeline-form" class="inline-form"><label>Patient reference<input name="patient_id" placeholder="e.g. SYN-1048" required maxlength="128"></label><button type="submit">LOAD TIMELINE <span>→</span></button></form>
+      <div id="timeline-list" class="timeline-list"><p class="empty">Enter a synthetic patient reference to review evidence-linked facts.</p></div>
+    </section>
+
     <section class="principles" id="evidence">
       <p class="eyebrow">SYSTEM CONTRACT / EVIDENCE FIRST</p>
       <div><article><b>01</b><h3>Immutable source</h3><p>Original files are retained with a SHA-256 fingerprint and stable source identifier.</p></article><article><b>02</b><h3>Location-aware facts</h3><p>Facts require a page and may include line ranges, exact quotes, and bounding boxes.</p></article><article><b>03</b><h3>Explicit uncertainty</h3><p>Every extracted fact carries confidence. Unsupported claims do not become answers.</p></article></div>
     </section>
   </main>
-  <footer><span>MEDITrace AI / BUILD 0.1</span><span>NO REAL PATIENT DATA</span></footer>
+  <footer><span>MEDITrace AI / PHASES 0—3</span><span>NO REAL PATIENT DATA</span></footer>
   <script src="/app.js"></script>
 </body>
 </html>
