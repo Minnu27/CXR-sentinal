@@ -10,7 +10,11 @@ from .models import Base
 
 
 def build_engine(settings: Settings):
-    kwargs = {"connect_args": {"check_same_thread": False}} if settings.database_url.startswith("sqlite") else {}
+    kwargs = (
+        {"connect_args": {"check_same_thread": False}}
+        if settings.database_url.startswith("sqlite")
+        else {}
+    )
     return create_engine(settings.database_url, pool_pre_ping=True, **kwargs)
 
 

@@ -1,0 +1,13 @@
+# Optional legacy CXR research environment. Not installed in the Vercel function.
+-r requirements.txt
+torch>=2.2
+torchvision>=0.17
+pandas
+scikit-learn
+pillow
+matplotlib
+pyyaml
+requests
+gradio
+black
+pytest

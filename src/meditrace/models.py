@@ -6,7 +6,7 @@ import uuid
 from sqlalchemy import Date, DateTime, Enum, Float, ForeignKey, Integer, JSON, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from .schemas import DocumentStatus
+from .schemas import DocumentStatus, DocumentType
 
 
 class Base(DeclarativeBase):
@@ -22,15 +22,27 @@ class Document(Base):
     object_key: Mapped[str] = mapped_column(String(512), unique=True)
     size_bytes: Mapped[int] = mapped_column(Integer)
     sha256: Mapped[str] = mapped_column(String(64), index=True)
-    status: Mapped[DocumentStatus] = mapped_column(Enum(DocumentStatus), default=DocumentStatus.uploaded)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-    facts: Mapped[list["Fact"]] = relationship(back_populates="document", cascade="all, delete-orphan")
+    status: Mapped[DocumentStatus] = mapped_column(
+        Enum(DocumentStatus), default=DocumentStatus.uploaded
+    )
+    document_type: Mapped[DocumentType] = mapped_column(
+        Enum(DocumentType), default=DocumentType.unknown
+    )
+    extraction_error: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+    facts: Mapped[list["Fact"]] = relationship(
+        back_populates="document", cascade="all, delete-orphan"
+    )
 
 
 class Fact(Base):
     __tablename__ = "facts"
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
-    source_document_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("documents.id", ondelete="CASCADE"), index=True)
+    source_document_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("documents.id", ondelete="CASCADE"), index=True
+    )
     patient_id: Mapped[str] = mapped_column(String(128), index=True)
     fact_type: Mapped[str] = mapped_column(String(64), index=True)
     test_or_finding: Mapped[str] = mapped_column(String(255), index=True)
@@ -42,5 +54,25 @@ class Fact(Base):
     observed_date: Mapped[date] = mapped_column(Date, index=True)
     evidence_location: Mapped[dict] = mapped_column(JSON)
     confidence: Mapped[float] = mapped_column(Float)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    details: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
     document: Mapped[Document] = relationship(back_populates="facts")
+
+
+class ExtractionJob(Base):
+    __tablename__ = "extraction_jobs"
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    document_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("documents.id", ondelete="CASCADE"), index=True
+    )
+    status: Mapped[str] = mapped_column(String(32), default="queued", index=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    error: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+    completed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
