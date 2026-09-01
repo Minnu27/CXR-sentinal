@@ -1,12 +1,7 @@
-torch>=2.2
-torchvision>=0.17
-pandas
-scikit-learn
-pillow
-matplotlib
-pyyaml
-fastapi
-uvicorn
+# MediTrace API/serverless runtime. Keep ML research dependencies in
+# requirements-ml.txt so they are not bundled into the Vercel function.
+fastapi>=0.115
+uvicorn>=0.30
 sqlalchemy>=2.0
 psycopg[binary]>=3.1
 python-multipart

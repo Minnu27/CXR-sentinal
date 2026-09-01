@@ -45,6 +45,15 @@ uvicorn src.meditrace.api:app --reload
 
 The compose service is intended for local development only. Change its credentials before using it outside an isolated development machine.
 
+### Vercel
+
+The repository includes `api/index.py` as the explicit ASGI function and
+`vercel.json` routes both the API and bundled web interface to it. The default
+runtime dependency set intentionally excludes PyTorch and the legacy CXR stack
+to keep the serverless function within deployment limits. Configure a durable
+`DATABASE_URL`/`POSTGRES_URL` in the Vercel project for persistent metadata;
+SQLite and uploaded files under `/tmp` are ephemeral between invocations.
+
 ## API contract
 
 Interactive API documentation is available at `/docs`.

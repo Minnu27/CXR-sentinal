@@ -1,6 +1,16 @@
 from src.meditrace.config import Settings
 
 
+def test_vercel_asgi_entrypoint_imports(monkeypatch, tmp_path):
+    monkeypatch.setenv("VERCEL", "1")
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{tmp_path / 'vercel.db'}")
+    monkeypatch.setenv("OBJECT_STORE_PATH", str(tmp_path / "objects"))
+
+    from api.index import app
+
+    assert app.title == "MediTrace AI"
+
+
 def test_vercel_defaults_use_writable_tmp(monkeypatch):
     monkeypatch.setenv("VERCEL", "1")
     monkeypatch.delenv("DATABASE_URL", raising=False)
