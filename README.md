@@ -4,6 +4,8 @@ MediTrace is an evidence-first workspace for turning synthetic and de-identified
 
 > **Decision-support prototype on synthetic/de-identified research data — not a diagnostic device.** Do not upload identifiable patient information or use this software for clinical care.
 
+New here? [`GETTING_STARTED.md`](GETTING_STARTED.md) is a step-by-step, from-scratch walkthrough — clone, install, run, upload a document, and see an evidence-linked fact and timeline come back.
+
 ## What works now
 
 - A FastAPI service with upload, document register, source retrieval, and evidence-fact endpoints.
